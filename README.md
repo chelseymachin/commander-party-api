@@ -71,82 +71,142 @@ Returns a JSON object with deck breakdown results:
 
 ```json
 {
-  "analysis": [
-    {
-      "type_counts": {
-        "Artifact": 10,
-        "Creature": 26,
-        "Sorcery": 7
-      },
-      "color_counts": {
-        "W": 10,
-        "U": 17,
-        "B": 0,
-        "R": 8,
-        "G": 20,
-        "C": 1
-      },
-      "avg_converted_mana_cost": 3.26,
-      "mana_curve_histogram": {
-        "0": 2,
-        "1": 6,
-        "2": 12,
-        "3": 14,
-        "4": 9,
-        "5": 6,
-        "6": 2,
-        "7+": 3
-      },
-      "max_converted_mana_cost": 9,
-      "ramp_analysis": {
-        "ramp_count": 10,
-        "ramp_cards": [
-          "Sol Ring",
-          "Arcane Signet",
-          "Nature's Lore"
-        ]
-      },
-      "interaction_analysis": {
-        "removal": 5,
-        "board_wipes": 2,
-        "counterspells": 1,
-        "graveyard_hate": 0,
-        "interaction_cards": [
-          "Chaos Warp",
-          "Swords to Plowshares"
-        ]
-      },
-      "card_draw_analysis": {
-        "card_draw_count": 7,
-        "card_draw_cards": [
-          "Harmonize",
-          "Skullclamp"
-        ]
-      },
-      "tribal_synergy_analysis": {
-        "most_common_tribe": "Elf",
-        "tribe_card_count": 9,
-        "tribal_enablers": [
-          "Elvish Archdruid",
-          "Sylvan Messenger"
-        ]
-      },
-      "recursion_analysis": {
-        "recursion_count": 3,
-        "recursion_cards": [
-          "Eternal Witness",
-          "Sun Titan"
-        ]
-      },
-      "commander_analysis": {
-        "commander_name": "Tatyova, Benthic Druid",
-        "commander_type_line": "Legendary Creature — Merfolk Druid",
-        "commander_colors": ["U", "G"],
-        "commander_oracle_text": "Whenever a land enters the battlefield under your control, you gain 1 life and draw a card.",
-        "is_legendary": true
-      }
-    }
-  ]
+    "analysis": [
+        {
+            "avg_converted_mana_cost": 2.96,
+            "card_draw_analysis": {
+                "card_draw_cards": [
+                    "Fractured Sanity",
+                    "Jace's Archivist",
+                    "Minds Aglow",
+                    "Court of Cunning",
+                    "Notion Thief",
+                    "Folio of Fancies",
+                    "Dimir Locket",
+                    "Anowon, the Ruin Thief",
+                    "Teferi's Tutelage",
+                    "Whispering Madness",
+                    "Windfall",
+                    "Pilfered Plans"
+                ],
+                "card_draw_count": 12
+            },
+            "color_counts": {
+                "color_count": {
+                    "B": 40,
+                    "C": 12,
+                    "G": 0,
+                    "R": 0,
+                    "U": 58,
+                    "W": 0
+                }
+            },
+            "commander_analysis": {
+                "commander_colors": [
+                    "B",
+                    "U"
+                ],
+                "commander_name": "Oona, Queen of the Fae",
+                "commander_oracle_text": "Flying\n{X}{U/B}: Choose a color. Target opponent exiles the top X cards of their library. For each card of the chosen color exiled this way, create a 1/1 blue and black Faerie Rogue creature token with flying.",
+                "commander_type_line": "Legendary Creature — Faerie Wizard",
+                "is_legendary": true
+            },
+            "interaction_analysis": {
+                "board_wipes": 0,
+                "counterspells": 7,
+                "graveyard_hate": 4,
+                "interaction_cards": [
+                    "Infernal Grasp",
+                    "Crypt Incursion",
+                    "Counterspell",
+                    "Murder",
+                    "Go for the Throat",
+                    "Drown in the Loch",
+                    "Grisly Spectacle",
+                    "Didn't Say Please",
+                    "Kasmina's Transmutation",
+                    "Faerie Trickery",
+                    "Feed the Swarm",
+                    "Ashiok, Dream Render",
+                    "Ichthyomorphosis",
+                    "Induce Paranoia",
+                    "Thought Collapse",
+                    "Tormod's Crypt",
+                    "Vessel of Endless Rest",
+                    "Witness Protection",
+                    "Psychic Strike"
+                ],
+                "removal": 9
+            },
+            "mana_curve_histogram": {
+                "0": 1,
+                "1": 8,
+                "2": 17,
+                "3": 25,
+                "4": 7,
+                "5": 6,
+                "6": 2,
+                "7+": 2
+            },
+            "max_converted_mana_cost": 7.0,
+            "ramp_analysis": {
+                "ramp_cards": [
+                    "Arcane Signet",
+                    "Charcoal Diamond",
+                    "Dimir Signet",
+                    "Darksteel Ingot",
+                    "Dimir Keyrune",
+                    "Dimir Locket",
+                    "Vessel of Endless Rest",
+                    "Zareth San, the Trickster",
+                    "Sky Diamond",
+                    "Sol Ring"
+                ],
+                "ramp_count": 10
+            },
+            "recursion_analysis": {
+                "recursion_cards": [
+                    "Mystic Sanctuary",
+                    "Codex Shredder",
+                    "Halo Forager",
+                    "Vessel of Endless Rest",
+                    "Zareth San, the Trickster"
+                ],
+                "recursion_count": 5
+            },
+            "tribal_synergy_analysis": {
+                "matching_synergy_card_count": 5,
+                "matching_synergy_cards_for_tribe": [
+                    "Oona's Blackguard",
+                    "Anowon, the Ruin Thief",
+                    "Thieves' Guild Enforcer",
+                    "Zareth San, the Trickster",
+                    "Soaring Thought-Thief"
+                ],
+                "most_common_tribe": "Rogue",
+                "tribal_synergy_card_count": 7,
+                "tribal_synergy_cards": [
+                    "Oona's Blackguard",
+                    "Faerie Trickery",
+                    "Anowon, the Ruin Thief",
+                    "Path of Ancestry",
+                    "Thieves' Guild Enforcer",
+                    "Zareth San, the Trickster",
+                    "Soaring Thought-Thief"
+                ],
+                "tribe_creature_count": 8
+            },
+            "type_counts": {
+                "Artifact": 14,
+                "Creature": 23,
+                "Enchantment": 9,
+                "Instant": 12,
+                "Land": 15,
+                "Planeswalker": 1,
+                "Sorcery": 11
+            }
+        }
+    ]
 }
 ```
 
