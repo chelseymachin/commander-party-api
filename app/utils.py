@@ -123,9 +123,11 @@ def analyze_mana_curve_histogram(cards):
 
 def analyze_max_converted_mana_cost(cards):
     max_converted_mana_cost = 0
+
+    # skip land cards for max CMC calculation
+    cards = skip_land_cards(cards)
+
     for card in cards:
-        if "Land" in card.get("type_line", "").split():
-            continue
         converted_mana_cost = card.get("cmc", 0)
         if converted_mana_cost > max_converted_mana_cost:
             max_converted_mana_cost = converted_mana_cost
@@ -137,6 +139,7 @@ def analyze_ramp(cards):
     ramp_count = 0
     ramp_cards = []
 
+    # Skip land cards for ramp analysis
     cards = skip_land_cards(cards)
 
     for card in cards:
@@ -170,9 +173,6 @@ def analyze_interaction(cards):
         "graveyard_hate_cards": [],
         "interaction_cards": []
     }
-
-    # Skip land cards for interaction analysis
-    cards = skip_land_cards(cards)
 
     for card in cards:
         name = card.get("name", "Unknown")
@@ -209,8 +209,6 @@ def analyze_card_draw(cards):
     draw_count = 0
     draw_cards = []
 
-    # skip land cards for card draw analysis
-    cards = skip_land_cards(cards)
     for card in cards:
         oracle = card.get("oracle_text", "").lower()
         name = card.get("name", "Unknown")
