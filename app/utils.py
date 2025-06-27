@@ -1,4 +1,5 @@
 import requests
+import re
 from collections import Counter
 
 card_cache = {}
@@ -7,7 +8,16 @@ oracle_tag_cache = {}
 
 ## general utility
 def parse_card_names(deck_list):
-    return list({name.strip() for name in deck_list if name.strip()})
+    # remove duplicates and whitespace from the deck list
+    # but keep user input order
+    seen = set()
+    result = []
+    for name in deck_list:
+        cleaned = name.strip()
+        if cleaned and cleaned not in seen:
+            seen.add(cleaned)
+            result.append(cleaned)
+    return result
 
 def fetch_card_data(name):
     if name in card_cache:
@@ -43,7 +53,7 @@ def fetch_oracle_tag_set(tagName):
     oracle_tag_cache[tagName] = card_names
     return card_names
 
-def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw"]):
+def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw", "recursion", "tribal"]):
     for tag in tags:
         fetch_oracle_tag_set(tag)
 
@@ -206,53 +216,67 @@ def analyze_card_draw(cards):
 
 # tribal synergy analysis
 def analyze_tribal_synergy(cards):
-    creature_type_counts = Counter()
-    tribal_enablers = []
+    tribal_synergy_card_names_scryfall = fetch_oracle_tag_set('tribal')
+
+    subtype_counts = Counter()
+    tribal_synergy_cards = []
 
     for card in cards:
+        name = card.get("name", "Unknown")
         type_line = card.get("type_line", "")
-        if "Creature" in type_line:
-            # extract types after em dash (e.g., "Creature — Zombie Wizard")
-            if "—" in type_line:
-                tribes = type_line.split("—")[1].strip().split(" ")
-                for tribe in tribes:
-                    if tribe.isalpha():  # skip punctuation or weird cases
-                        creature_type_counts[tribe] += 1
-
-        # detect tribal enablers like "Zombies get +1/+1"
         oracle = card.get("oracle_text", "").lower()
-        if "creatures you control get" in oracle or "other" in oracle and "creatures" in oracle:
-            tribal_enablers.append(card.get("name", "Unknown"))
 
-    most_common = creature_type_counts.most_common(1)[0] if creature_type_counts else None
+        if name in tribal_synergy_card_names_scryfall:
+            tribal_synergy_cards.append({
+                "name": name,
+                "oracle_text": oracle
+            })
 
+        if "—" in type_line and "Creature" in type_line:
+            subtypes_str = type_line.split("—")[1].strip()
+            subtypes = re.split(r"\s+|/", subtypes_str)
+            for subtype in subtypes:
+                if subtype.isalpha():
+                    subtype_counts[subtype] += 1
+
+    most_common = subtype_counts.most_common(1)[0] if subtype_counts else None
+
+    if most_common:
+        tribe = most_common[0].lower()
+        tribe_creature_count = most_common[1]
+
+        tribe_matching_synergy = [
+            card["name"] for card in tribal_synergy_cards
+            if tribe in card["oracle_text"]
+        ]
+    else:
+        tribe = None
+        tribe_creature_count = 0
+        tribe_matching_synergy = []
+
+    # TO-DO: Add score for how much of the tribal synergy cards in the deck match the most common tribe
     return {
-        "most_common_tribe": most_common[0] if most_common else None,
-        "tribe_card_count": most_common[1] if most_common else 0,
-        "tribal_enablers": tribal_enablers
+        "most_common_tribe": tribe.capitalize() if tribe else None,
+        "tribe_creature_count": tribe_creature_count,
+        "tribal_synergy_card_count": len(tribal_synergy_cards),
+        "tribal_synergy_cards": [card["name"] for card in tribal_synergy_cards],
+        "matching_synergy_cards_for_tribe": tribe_matching_synergy,
+        "matching_synergy_card_count": len(tribe_matching_synergy)
     }
+
 
 # recursion/graveyard analysis
 def analyze_recursion(cards):
-    recursion_keywords = [
-        "return target creature card from your graveyard",
-        "return target card from your graveyard",
-        "put target creature card from your graveyard",
-        "return all creature cards",
-        "return x cards from your graveyard",
-        "return up to",
-        "reanimate",
-        "unearth",
-        "embalm",
-        "eternalize"
-    ]
-
+    recursion_card_names_scryfall = fetch_oracle_tag_set('recursion')
     recursion_count = 0
     recursion_cards = []
 
     for card in cards:
         oracle = card.get("oracle_text", "").lower()
-        if any(keyword in oracle for keyword in recursion_keywords):
+        name = card.get("name", "Unknown")
+        matched = False
+
+        if name in recursion_card_names_scryfall:
             recursion_count += 1
             recursion_cards.append(card.get("name", "Unknown"))
 
@@ -263,19 +287,21 @@ def analyze_recursion(cards):
 
 # commander analysis
 def analyze_commander(cards, deck_list=None):
-    if not deck_list:
-        return {}
+    if not deck_list or not cards:
+        return {"error": "Deck list or card data missing"}
 
-    commander_name = deck_list[0].strip()
-    commander_card = next((c for c in cards if c.get("name", "").lower() == commander_name.lower()), None)
+    commander_name = deck_list[0].strip().lower()
 
-    if not commander_card:
-        return {"error": "Commander not found in card data"}
+    for card in cards:
+        name = card.get("name", "").lower()
+        type_line = card.get("type_line", "")
+        if name == commander_name:
+            return {
+                "commander_name": card.get("name"),
+                "commander_type_line": type_line,
+                "commander_colors": card.get("color_identity", []),
+                "commander_oracle_text": card.get("oracle_text", ""),
+                "is_legendary": "Legendary" in type_line
+            }
 
-    return {
-        "commander_name": commander_card.get("name"),
-        "commander_type_line": commander_card.get("type_line"),
-        "commander_colors": commander_card.get("color_identity"),
-        "commander_oracle_text": commander_card.get("oracle_text"),
-        "is_legendary": "Legendary" in commander_card.get("type_line", ""),
-    }
+    return {"error": f"Commander '{deck_list[0]}' not found or invalid (may be a typo)"}

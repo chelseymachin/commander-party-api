@@ -48,11 +48,12 @@ Analyzes a submitted Commander deck list and returns structured analysis results
 
 ### Request Body
 
-Send a JSON object with a `deck` field containing an array of card names.
+Send a JSON object with a `deck` field containing an array of card names.  The first card in the deck NEEDS to be your commander.  This is pretty standard in deck export/imports for commanders as it's pretty hard to determine which individual card COULD be a commander for the deck.
 
 ```json
 {
   "deck": [
+    "YourCommanderHere"
     "Sol Ring",
     "Cultivate",
     "Command Tower",
