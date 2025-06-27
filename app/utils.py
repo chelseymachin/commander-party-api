@@ -144,7 +144,7 @@ def find_matching_card_names_skip_lands(cards, name_set):
 def find_matching_card_names(cards, name_set):
     return [card.get("name", "") for card in cards if card.get("name", "") in name_set]
 
-def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw", "recursion", "tribal", "win-condition", "land-removal", "lockdown-land"]):
+def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw", "recursion", "tribal", "win-condition", "land-removal", "lockdown-land", "extra-turn", "tutor"]):
     for tag in tags:
         fetch_tagged_set(tag, "oracletag")
 
@@ -222,6 +222,27 @@ def analyze_gamechangers(cards):
     return {
         "gamechanger_count": len(found),
         "gamechanger_cards": found
+    }
+
+def analyze_extra_turns(cards):
+    extra_turn_cards = fetch_tagged_set('extra-turn', 'oracletag')
+
+    found = find_matching_card_names(cards, extra_turn_cards)
+
+    return {
+        "extra_turn_count": len(found),
+        "extra_turn_cards": found
+    }
+
+def analyze_non_land_tutors(cards):
+    tutor_card_names = fetch_tagged_set('tutor', 'oracletag')
+
+    # skip land cards for tutor analysis
+    found = find_matching_card_names_skip_lands(cards, tutor_card_names)
+
+    return {
+        "tutor_count": len(found),
+        "tutor_cards": found
     }
 
 def analyze_mass_land_denial(cards):

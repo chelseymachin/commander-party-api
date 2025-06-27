@@ -37,6 +37,8 @@ def analyze_deck():
             'gamechanger_analysis': analyze_gamechangers(cards_data),
             'mass_land_denial_analysis': analyze_mass_land_denial(cards_data),
             '2_card_combo_analysis': analyze_2_card_combos(cards_data, card_names),
+            'extra_turns_analysis': analyze_extra_turns(cards_data),
+            'tutor_analysis': analyze_non_land_tutors(cards_data)
             })
 
         return jsonify({'analysis': results_data}), 200
