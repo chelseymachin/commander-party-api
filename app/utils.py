@@ -4,7 +4,13 @@ from collections import Counter
 
 card_cache = {}
 oracle_tag_cache = {}
+oracle_text_search_cache = {}
+is_cache = {}
 
+## urls
+oracle_tag_prefix = "https://api.scryfall.com/cards/search?q=oracletag:"
+is_prefix = "https://api.scryfall.com/cards/search?q=is:"
+oracle_text_search_prefix = "https://api.scryfall.com/cards/search?q=oracle:"
 
 ## general utility
 def parse_card_names(deck_list):
@@ -36,26 +42,46 @@ def fetch_card_data(name):
             'error': f'Scryfall lookup failed ({response.status_code})'
         }
 
-def fetch_oracle_tag_set(tagName):
-    if tagName in oracle_tag_cache:
-        return oracle_tag_cache[tagName]
-
+def fetch_custom_query_set(queryValue, url, cacheName):
+    if queryValue in cacheName:
+        return cacheName[queryValue]
+    
     card_names = set()
-    url = f"https://api.scryfall.com/cards/search?q=oracletag:{tagName}"
 
     while url:
         response = requests.get(url)
+        if response.status_code != 200:
+            print(f"Error fetching Scryfall query: {url}")
+            print(f"Status Code: {response.status_code}")
+            print(f"Response Body: {response.text}")
+            cacheName[queryValue] = set()  # Cache as empty to avoid retries
+            return set()
+
         data = response.json()
+        if "data" not in data:
+            print(f"Unexpected response structure for {url}")
+            print(f"Response: {data}")
+            cacheName[queryValue] = set()
+            return set()
+
         for card in data["data"]:
             card_names.add(card["name"])
         url = data.get("next_page")
-    
-    oracle_tag_cache[tagName] = card_names
+
+    cacheName[queryValue] = card_names
     return card_names
 
-def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw", "recursion", "tribal"]):
+def preload_all_oracle_tag_sets(tags=["ramp", "removal", "boardwipe", "counterspell", "graveyardhate", "draw", "recursion", "tribal", "win-condition", "land-removal", "lockdown-land"]):
     for tag in tags:
-        fetch_oracle_tag_set(tag)
+        fetch_custom_query_set(tag, f"{oracle_tag_prefix}{tag}", oracle_tag_cache)
+
+def preload_all_is_sets(tags=["gamechanger"]):
+    for tag in tags:
+        fetch_custom_query_set(tag, f"{is_prefix}{tag}", is_cache)
+
+def preload_all_oracle_text_sets(phrases=["destroy all lands"]):
+    for phrase in phrases:
+        fetch_custom_query_set(phrase, f"{oracle_text_search_prefix}{phrase}", oracle_text_search_cache)
 
 def skip_land_cards(cards):
     return [
@@ -94,20 +120,55 @@ def count_colors(cards):
 def analyze_avg_converted_mana_cost(cards):
     total_cmc = 0
     count = 0
+
     # skip land cards for average CMC calculation
-    cards = skip_land_cards(cards)
-    for card in cards:
+    for card in skip_land_cards(cards):
         cmc = card.get("cmc", 0)
         total_cmc += cmc
         count += 1
     return round(total_cmc / count, 2) if count else 0
 
+def analyze_gamechangers(cards):
+    win_condition_cards = fetch_custom_query_set('win-condition', f"{oracle_tag_prefix}win-condition", oracle_tag_cache)
+    gamechanger_names = fetch_custom_query_set('gamechanger', f"{is_prefix}gamechanger", is_cache)
+
+    # Combine both sets to check against as gamechangers
+    all_gamechanger_cards = win_condition_cards | gamechanger_names
+
+    found = []
+    for card in skip_land_cards(cards):
+        name = card.get("name", "")
+        if name in all_gamechanger_cards:
+            found.append(name)
+
+    return {
+        "gamechanger_count": len(found),
+        "gamechanger_cards": found
+    }
+
+def analyze_mass_land_denial(cards):
+    land_removal_card_names_scryfall = fetch_custom_query_set('land-removal', f"{oracle_tag_prefix}land-removal", oracle_tag_cache)
+    lockdown_land_card_names_scryfall = fetch_custom_query_set('lockdown-land', f"{oracle_tag_prefix}lockdown-land", oracle_tag_cache)
+    destroy_all_land_card_names_scryfall = fetch_custom_query_set('destroy all lands', f"{oracle_text_search_prefix}'destroy all lands'", oracle_text_search_cache)
+
+    # combine all to check against as land denial
+    all_land_denial_cards = land_removal_card_names_scryfall | lockdown_land_card_names_scryfall | destroy_all_land_card_names_scryfall
+
+    found = []
+    for card in skip_land_cards(cards):
+        name = card.get("name", "")
+        if name in all_land_denial_cards:
+            found.append(name)
+    return {
+        "land_denial_count": len(found),
+        "land_denial_cards": found
+    }
+
 def analyze_mana_curve_histogram(cards):
     histogram = {}
 
     # skip land cards for mana curve histogram
-    cards = skip_land_cards(cards)
-    for card in cards:
+    for card in skip_land_cards(cards):
         converted_mana_cost = int(card.get("cmc", 0))
         # Group anything 7+ into the "7+" bucket
         key = str(converted_mana_cost) if converted_mana_cost < 7 else "7+"
@@ -125,9 +186,7 @@ def analyze_max_converted_mana_cost(cards):
     max_converted_mana_cost = 0
 
     # skip land cards for max CMC calculation
-    cards = skip_land_cards(cards)
-
-    for card in cards:
+    for card in skip_land_cards(cards):
         converted_mana_cost = card.get("cmc", 0)
         if converted_mana_cost > max_converted_mana_cost:
             max_converted_mana_cost = converted_mana_cost
@@ -135,14 +194,12 @@ def analyze_max_converted_mana_cost(cards):
 
 # ramp analysis
 def analyze_ramp(cards):
-    ramp_card_names_scryfall = fetch_oracle_tag_set('ramp')
+    ramp_card_names_scryfall = fetch_custom_query_set('ramp', f"{oracle_tag_prefix}ramp", oracle_tag_cache)
     ramp_count = 0
     ramp_cards = []
 
     # Skip land cards for ramp analysis
-    cards = skip_land_cards(cards)
-
-    for card in cards:
+    for card in skip_land_cards(cards):
         name = card.get("name", "")
         oracle_text = card.get("oracle_text", "").lower()
 
@@ -157,10 +214,10 @@ def analyze_ramp(cards):
 
 # interaction analysis
 def analyze_interaction(cards):
-    removal_card_names_scryfall = fetch_oracle_tag_set('removal')
-    board_wipe_card_names_scryfall = fetch_oracle_tag_set('boardwipe')
-    counterspell_card_names_scryfall = fetch_oracle_tag_set('counterspell')
-    graveyard_hate_card_names_scryfall = fetch_oracle_tag_set('graveyardhate')
+    removal_card_names_scryfall = fetch_custom_query_set('removal', f"{oracle_tag_prefix}removal", oracle_tag_cache)
+    board_wipe_card_names_scryfall = fetch_custom_query_set('boardwipe', f"{oracle_tag_prefix}boardwipe", oracle_tag_cache)
+    counterspell_card_names_scryfall = fetch_custom_query_set('counterspell', f"{oracle_tag_prefix}counterspell", oracle_tag_cache)
+    graveyard_hate_card_names_scryfall = fetch_custom_query_set('graveyardhate', f"{oracle_tag_prefix}graveyardhate", oracle_tag_cache)
 
     interaction_summary = {
         "removal": 0,
@@ -205,7 +262,7 @@ def analyze_interaction(cards):
 
 # card draw analysis
 def analyze_card_draw(cards):
-    draw_card_names_scryfall = fetch_oracle_tag_set('draw')
+    draw_card_names_scryfall = fetch_custom_query_set('draw', f"{oracle_tag_prefix}draw", oracle_tag_cache)
     draw_count = 0
     draw_cards = []
 
@@ -225,7 +282,7 @@ def analyze_card_draw(cards):
 
 # tribal synergy analysis
 def analyze_tribal_synergy(cards):
-    tribal_synergy_card_names_scryfall = fetch_oracle_tag_set('tribal')
+    tribal_synergy_card_names_scryfall = fetch_custom_query_set('tribal', f"{oracle_tag_prefix}tribal", oracle_tag_cache)
 
     subtype_counts = Counter()
     tribal_synergy_cards = []
@@ -276,7 +333,7 @@ def analyze_tribal_synergy(cards):
 
 # recursion/graveyard analysis
 def analyze_recursion(cards):
-    recursion_card_names_scryfall = fetch_oracle_tag_set('recursion')
+    recursion_card_names_scryfall = fetch_custom_query_set('recursion', f"{oracle_tag_prefix}recursion", oracle_tag_cache)
     recursion_count = 0
     recursion_cards = []
 

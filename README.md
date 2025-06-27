@@ -80,14 +80,14 @@ Returns a JSON object with deck breakdown results:
                     "Court of Cunning",
                     "Dimir Locket",
                     "Fractured Sanity",
+                    "Folio of Fancies",
                     "Jace's Archivist",
                     "Minds Aglow",
-                    "Notion Thief",
-                    "Folio of Fancies",
                     "Pilfered Plans",
+                    "Notion Thief",
                     "Teferi's Tutelage",
-                    "Whispering Madness",
-                    "Windfall"
+                    "Windfall",
+                    "Whispering Madness"
                 ],
                 "card_draw_count": 12
             },
@@ -111,6 +111,12 @@ Returns a JSON object with deck breakdown results:
                 "commander_type_line": "Legendary Creature — Faerie Wizard",
                 "is_legendary": true
             },
+            "gamechanger_analysis": {
+                "gamechanger_cards": [
+                    "Notion Thief"
+                ],
+                "gamechanger_count": 1
+            },
             "interaction_analysis": {
                 "board_wipe_cards": [],
                 "board_wipes": 0,
@@ -124,44 +130,46 @@ Returns a JSON object with deck breakdown results:
                     "Thought Collapse"
                 ],
                 "counterspells": 7,
-                "graveyard_hate": 4,
+                "graveyard_hate": 5,
                 "graveyard_hate_cards": [
                     "Ashiok, Dream Render",
+                    "Bojuka Bog",
                     "Crypt Incursion",
                     "Tormod's Crypt",
                     "Vessel of Endless Rest"
                 ],
                 "interaction_cards": [
                     "Ashiok, Dream Render",
-                    "Counterspell",
+                    "Bojuka Bog",
                     "Crypt Incursion",
+                    "Counterspell",
                     "Didn't Say Please",
                     "Drown in the Loch",
                     "Faerie Trickery",
-                    "Feed the Swarm",
                     "Grisly Spectacle",
-                    "Ichthyomorphosis",
+                    "Feed the Swarm",
                     "Go for the Throat",
+                    "Ichthyomorphosis",
                     "Induce Paranoia",
                     "Infernal Grasp",
+                    "Kasmina's Transmutation",
                     "Murder",
                     "Psychic Strike",
-                    "Kasmina's Transmutation",
+                    "Thought Collapse",
                     "Tormod's Crypt",
                     "Vessel of Endless Rest",
-                    "Witness Protection",
-                    "Thought Collapse"
+                    "Witness Protection"
                 ],
                 "removal": 9,
                 "removal_cards": [
                     "Drown in the Loch",
-                    "Feed the Swarm",
                     "Grisly Spectacle",
-                    "Ichthyomorphosis",
+                    "Feed the Swarm",
                     "Go for the Throat",
+                    "Ichthyomorphosis",
                     "Infernal Grasp",
-                    "Murder",
                     "Kasmina's Transmutation",
+                    "Murder",
                     "Witness Protection"
                 ]
             },
@@ -175,19 +183,23 @@ Returns a JSON object with deck breakdown results:
                 "6": 2,
                 "7+": 2
             },
+            "mass_land_denial_analysis": {
+                "land_denial_cards": [],
+                "land_denial_count": 0
+            },
             "max_converted_mana_cost": 7.0,
             "ramp_analysis": {
                 "ramp_cards": [
                     "Arcane Signet",
                     "Charcoal Diamond",
                     "Darksteel Ingot",
-                    "Dimir Locket",
                     "Dimir Keyrune",
+                    "Dimir Locket",
                     "Dimir Signet",
-                    "Sol Ring",
                     "Sky Diamond",
-                    "Vessel of Endless Rest",
-                    "Zareth San, the Trickster"
+                    "Sol Ring",
+                    "Zareth San, the Trickster",
+                    "Vessel of Endless Rest"
                 ],
                 "ramp_count": 10
             },
@@ -196,8 +208,8 @@ Returns a JSON object with deck breakdown results:
                     "Codex Shredder",
                     "Halo Forager",
                     "Mystic Sanctuary",
-                    "Vessel of Endless Rest",
-                    "Zareth San, the Trickster"
+                    "Zareth San, the Trickster",
+                    "Vessel of Endless Rest"
                 ],
                 "recursion_count": 5
             },
@@ -207,8 +219,8 @@ Returns a JSON object with deck breakdown results:
                     "Anowon, the Ruin Thief",
                     "Oona's Blackguard",
                     "Soaring Thought-Thief",
-                    "Zareth San, the Trickster",
-                    "Thieves' Guild Enforcer"
+                    "Thieves' Guild Enforcer",
+                    "Zareth San, the Trickster"
                 ],
                 "most_common_tribe": "Rogue",
                 "tribal_synergy_card_count": 7,
@@ -218,8 +230,8 @@ Returns a JSON object with deck breakdown results:
                     "Oona's Blackguard",
                     "Path of Ancestry",
                     "Soaring Thought-Thief",
-                    "Zareth San, the Trickster",
-                    "Thieves' Guild Enforcer"
+                    "Thieves' Guild Enforcer",
+                    "Zareth San, the Trickster"
                 ],
                 "tribe_creature_count": 8
             },
