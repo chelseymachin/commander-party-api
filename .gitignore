@@ -1,0 +1,23 @@
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+
+# VSCode or IDE-specific files
+.vscode/
+.idea/
+
+# Test cache
+.pytest_cache/
+
+# OS-specific
+.DS_Store
+
+# Local environment files (optional)
+.env
