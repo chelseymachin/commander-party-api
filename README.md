@@ -2,6 +2,10 @@
 
 A Flask-based API for analyzing Magic: The Gathering Commander (EDH) decks. This project uses the [Scryfall API](https://scryfall.com/docs/api) to fetch card data and provides a detailed breakdown of a deck’s structure, including ramp, interaction, card draw, recursion, tribal synergy, and commander identity.
 
+Can be hit live at the following url: 'https://commander-party-api-production.up.railway.app'
+
+Try it out in Postman!
+
 ---
 
 ## 🔧 Installation
