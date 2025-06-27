@@ -161,30 +161,41 @@ def analyze_interaction(cards):
 
     interaction_summary = {
         "removal": 0,
+        "removal_cards": [],
         "board_wipes": 0,
+        "board_wipe_cards": [],
         "counterspells": 0,
+        "counterspell_cards": [],
         "graveyard_hate": 0,
+        "graveyard_hate_cards": [],
         "interaction_cards": []
     }
-    
-    # skip land cards for interaction analysis
+
+    # Skip land cards for interaction analysis
     cards = skip_land_cards(cards)
+
     for card in cards:
-        oracle_text = card.get("oracle_text", "").lower()
         name = card.get("name", "Unknown")
         matched = False
 
         if name in removal_card_names_scryfall:
             interaction_summary["removal"] += 1
+            interaction_summary["removal_cards"].append(name)
             matched = True
+
         if name in board_wipe_card_names_scryfall:
             interaction_summary["board_wipes"] += 1
+            interaction_summary["board_wipe_cards"].append(name)
             matched = True
+
         if name in counterspell_card_names_scryfall:
             interaction_summary["counterspells"] += 1
+            interaction_summary["counterspell_cards"].append(name)
             matched = True
+
         if name in graveyard_hate_card_names_scryfall:
             interaction_summary["graveyard_hate"] += 1
+            interaction_summary["graveyard_hate_cards"].append(name)
             matched = True
 
         if matched:

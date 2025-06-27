@@ -76,18 +76,18 @@ Returns a JSON object with deck breakdown results:
             "avg_converted_mana_cost": 2.96,
             "card_draw_analysis": {
                 "card_draw_cards": [
+                    "Anowon, the Ruin Thief",
+                    "Court of Cunning",
+                    "Dimir Locket",
                     "Fractured Sanity",
                     "Jace's Archivist",
                     "Minds Aglow",
-                    "Court of Cunning",
                     "Notion Thief",
                     "Folio of Fancies",
-                    "Dimir Locket",
-                    "Anowon, the Ruin Thief",
+                    "Pilfered Plans",
                     "Teferi's Tutelage",
                     "Whispering Madness",
-                    "Windfall",
-                    "Pilfered Plans"
+                    "Windfall"
                 ],
                 "card_draw_count": 12
             },
@@ -112,31 +112,58 @@ Returns a JSON object with deck breakdown results:
                 "is_legendary": true
             },
             "interaction_analysis": {
+                "board_wipe_cards": [],
                 "board_wipes": 0,
+                "counterspell_cards": [
+                    "Counterspell",
+                    "Didn't Say Please",
+                    "Drown in the Loch",
+                    "Faerie Trickery",
+                    "Induce Paranoia",
+                    "Psychic Strike",
+                    "Thought Collapse"
+                ],
                 "counterspells": 7,
                 "graveyard_hate": 4,
-                "interaction_cards": [
-                    "Infernal Grasp",
+                "graveyard_hate_cards": [
+                    "Ashiok, Dream Render",
                     "Crypt Incursion",
+                    "Tormod's Crypt",
+                    "Vessel of Endless Rest"
+                ],
+                "interaction_cards": [
+                    "Ashiok, Dream Render",
                     "Counterspell",
-                    "Murder",
-                    "Go for the Throat",
-                    "Drown in the Loch",
-                    "Grisly Spectacle",
+                    "Crypt Incursion",
                     "Didn't Say Please",
-                    "Kasmina's Transmutation",
+                    "Drown in the Loch",
                     "Faerie Trickery",
                     "Feed the Swarm",
-                    "Ashiok, Dream Render",
+                    "Grisly Spectacle",
                     "Ichthyomorphosis",
+                    "Go for the Throat",
                     "Induce Paranoia",
-                    "Thought Collapse",
+                    "Infernal Grasp",
+                    "Murder",
+                    "Psychic Strike",
+                    "Kasmina's Transmutation",
                     "Tormod's Crypt",
                     "Vessel of Endless Rest",
                     "Witness Protection",
-                    "Psychic Strike"
+                    "Thought Collapse"
                 ],
-                "removal": 9
+                "removal": 9,
+                "removal_cards": [
+                    "Drown in the Loch",
+                    "Feed the Swarm",
+                    "Grisly Spectacle",
+                    "Ichthyomorphosis",
+                    "Go for the Throat",
+                    "Infernal Grasp",
+                    "Murder",
+                    "Kasmina's Transmutation",
+                    "Witness Protection"
+                ]
             },
             "mana_curve_histogram": {
                 "0": 1,
@@ -153,22 +180,22 @@ Returns a JSON object with deck breakdown results:
                 "ramp_cards": [
                     "Arcane Signet",
                     "Charcoal Diamond",
-                    "Dimir Signet",
                     "Darksteel Ingot",
-                    "Dimir Keyrune",
                     "Dimir Locket",
-                    "Vessel of Endless Rest",
-                    "Zareth San, the Trickster",
+                    "Dimir Keyrune",
+                    "Dimir Signet",
+                    "Sol Ring",
                     "Sky Diamond",
-                    "Sol Ring"
+                    "Vessel of Endless Rest",
+                    "Zareth San, the Trickster"
                 ],
                 "ramp_count": 10
             },
             "recursion_analysis": {
                 "recursion_cards": [
-                    "Mystic Sanctuary",
                     "Codex Shredder",
                     "Halo Forager",
+                    "Mystic Sanctuary",
                     "Vessel of Endless Rest",
                     "Zareth San, the Trickster"
                 ],
@@ -177,22 +204,22 @@ Returns a JSON object with deck breakdown results:
             "tribal_synergy_analysis": {
                 "matching_synergy_card_count": 5,
                 "matching_synergy_cards_for_tribe": [
-                    "Oona's Blackguard",
                     "Anowon, the Ruin Thief",
-                    "Thieves' Guild Enforcer",
+                    "Oona's Blackguard",
+                    "Soaring Thought-Thief",
                     "Zareth San, the Trickster",
-                    "Soaring Thought-Thief"
+                    "Thieves' Guild Enforcer"
                 ],
                 "most_common_tribe": "Rogue",
                 "tribal_synergy_card_count": 7,
                 "tribal_synergy_cards": [
-                    "Oona's Blackguard",
-                    "Faerie Trickery",
                     "Anowon, the Ruin Thief",
+                    "Faerie Trickery",
+                    "Oona's Blackguard",
                     "Path of Ancestry",
-                    "Thieves' Guild Enforcer",
+                    "Soaring Thought-Thief",
                     "Zareth San, the Trickster",
-                    "Soaring Thought-Thief"
+                    "Thieves' Guild Enforcer"
                 ],
                 "tribe_creature_count": 8
             },
