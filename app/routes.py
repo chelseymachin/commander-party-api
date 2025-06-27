@@ -35,7 +35,8 @@ def analyze_deck():
             'recursion_analysis': analyze_recursion(cards_data),
             'commander_analysis': analyze_commander(cards_data, card_names),
             'gamechanger_analysis': analyze_gamechangers(cards_data),
-            'mass_land_denial_analysis': analyze_mass_land_denial(cards_data)
+            'mass_land_denial_analysis': analyze_mass_land_denial(cards_data),
+            '2_card_combo_analysis': analyze_2_card_combos(cards_data, card_names),
             })
 
         return jsonify({'analysis': results_data}), 200

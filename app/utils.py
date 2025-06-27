@@ -1,11 +1,14 @@
 import requests
 import re
+import itertools 
+
 from collections import Counter
 
 card_cache = {}
 oracle_tag_cache = {}
 oracle_text_search_cache = {}
 is_cache = {}
+combo_lookup_cache = None
 
 ## urls
 oracle_tag_prefix = "https://api.scryfall.com/cards/search?q=oracletag:"
@@ -41,6 +44,49 @@ def fetch_card_data(name):
             'name': name,
             'error': f'Scryfall lookup failed ({response.status_code})'
         }
+
+def fetch_combo_lookup():
+    global combo_lookup_cache
+    if combo_lookup_cache is not None:
+        return combo_lookup_cache
+
+    url = "https://backend.commanderspellbook.com/variants?format=json"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except Exception as e:
+        print(f"Failed to fetch combos: {e}")
+        combo_lookup_cache = {}
+        return {}
+
+    data = response.json()
+    results = data.get("results", [])
+    combo_lookup = {}
+
+    for variant in results:
+        uses = variant.get("uses", [])
+        if len(uses) != 2:
+            continue  # Only interested in 2-card combos
+
+        # Check if any component is commander-locked
+        if any(u.get("mustBeCommander", False) for u in uses):
+            continue
+
+        try:
+            cards = [u["card"]["name"] for u in uses]
+        except (KeyError, TypeError):
+            continue
+
+        key = frozenset(card.lower() for card in cards)
+        combo_lookup[key] = {
+            "cards": cards,
+            "features": [f["feature"]["name"] for f in variant.get("produces", [])],
+            "description": variant.get("description", ""),
+            "prerequisites": variant.get("notablePrerequisites", "") or variant.get("easyPrerequisites", "")
+        }
+
+    combo_lookup_cache = combo_lookup
+    return combo_lookup
 
 def fetch_custom_query_set(queryValue, url, cacheName):
     if queryValue in cacheName:
@@ -109,6 +155,15 @@ def preload_all_is_sets(tags=["gamechanger"]):
 def preload_all_oracle_text_sets(phrases=["destroy all lands"]):
     for phrase in phrases:
         fetch_tagged_set(phrase, "oracle")
+
+def preload_all_combo_lookups():
+    fetch_combo_lookup()
+
+def preload_all_cached_data():
+    preload_all_oracle_tag_sets()
+    preload_all_is_sets()
+    preload_all_oracle_text_sets()
+    preload_all_combo_lookups()
 
 def skip_land_cards(cards):
     return [
@@ -182,6 +237,33 @@ def analyze_mass_land_denial(cards):
     return {
         "land_denial_count": len(found),
         "land_denial_cards": found
+    }
+
+def analyze_2_card_combos(cards, deck_list):
+    if not deck_list or not cards:
+        return {"error": "Deck list or card data missing"}
+
+    deck_card_names = [card.get("name", "").lower() for card in cards]
+    commander_name = deck_list[0].strip().lower()
+    combo_lookup = fetch_combo_lookup()
+
+    matches = []
+    for pair in itertools.combinations(deck_card_names, 2):
+        key = frozenset(pair)
+        combo = combo_lookup.get(key)
+
+        if combo:
+            prerequisites = combo.get("prerequisites", "").lower()
+
+            # Only skip commander-locked combos if they mention a *different* commander than in deck_list
+            if "commander" in prerequisites and commander_name not in prerequisites:
+                continue  # locked to a different commander
+
+            matches.append(combo)
+
+    return {
+        "combo_count": len(matches),
+        "combo_details": matches
     }
 
 def analyze_mana_curve_histogram(cards):
