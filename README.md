@@ -79,12 +79,12 @@ Returns a JSON object with deck breakdown results:
                     "Anowon, the Ruin Thief",
                     "Court of Cunning",
                     "Dimir Locket",
-                    "Fractured Sanity",
                     "Folio of Fancies",
+                    "Fractured Sanity",
                     "Jace's Archivist",
                     "Minds Aglow",
-                    "Pilfered Plans",
                     "Notion Thief",
+                    "Pilfered Plans",
                     "Teferi's Tutelage",
                     "Windfall",
                     "Whispering Madness"
@@ -118,9 +118,10 @@ Returns a JSON object with deck breakdown results:
                 "gamechanger_count": 1
             },
             "interaction_analysis": {
-                "board_wipe_cards": [],
                 "board_wipes": 0,
-                "counterspell_cards": [
+                "board_wipes_cards": [],
+                "counterspells": 7,
+                "counterspells_cards": [
                     "Counterspell",
                     "Didn't Say Please",
                     "Drown in the Loch",
@@ -129,7 +130,6 @@ Returns a JSON object with deck breakdown results:
                     "Psychic Strike",
                     "Thought Collapse"
                 ],
-                "counterspells": 7,
                 "graveyard_hate": 5,
                 "graveyard_hate_cards": [
                     "Ashiok, Dream Render",
@@ -141,33 +141,33 @@ Returns a JSON object with deck breakdown results:
                 "interaction_cards": [
                     "Ashiok, Dream Render",
                     "Bojuka Bog",
-                    "Crypt Incursion",
                     "Counterspell",
+                    "Crypt Incursion",
                     "Didn't Say Please",
                     "Drown in the Loch",
                     "Faerie Trickery",
-                    "Grisly Spectacle",
                     "Feed the Swarm",
+                    "Grisly Spectacle",
                     "Go for the Throat",
+                    "Infernal Grasp",
                     "Ichthyomorphosis",
                     "Induce Paranoia",
-                    "Infernal Grasp",
                     "Kasmina's Transmutation",
                     "Murder",
                     "Psychic Strike",
                     "Thought Collapse",
                     "Tormod's Crypt",
-                    "Vessel of Endless Rest",
-                    "Witness Protection"
+                    "Witness Protection",
+                    "Vessel of Endless Rest"
                 ],
                 "removal": 9,
                 "removal_cards": [
                     "Drown in the Loch",
-                    "Grisly Spectacle",
                     "Feed the Swarm",
+                    "Grisly Spectacle",
                     "Go for the Throat",
-                    "Ichthyomorphosis",
                     "Infernal Grasp",
+                    "Ichthyomorphosis",
                     "Kasmina's Transmutation",
                     "Murder",
                     "Witness Protection"
@@ -190,16 +190,16 @@ Returns a JSON object with deck breakdown results:
             "max_converted_mana_cost": 7.0,
             "ramp_analysis": {
                 "ramp_cards": [
-                    "Arcane Signet",
                     "Charcoal Diamond",
-                    "Darksteel Ingot",
+                    "Arcane Signet",
                     "Dimir Keyrune",
+                    "Darksteel Ingot",
                     "Dimir Locket",
                     "Dimir Signet",
                     "Sky Diamond",
                     "Sol Ring",
-                    "Zareth San, the Trickster",
-                    "Vessel of Endless Rest"
+                    "Vessel of Endless Rest",
+                    "Zareth San, the Trickster"
                 ],
                 "ramp_count": 10
             },
@@ -208,8 +208,8 @@ Returns a JSON object with deck breakdown results:
                     "Codex Shredder",
                     "Halo Forager",
                     "Mystic Sanctuary",
-                    "Zareth San, the Trickster",
-                    "Vessel of Endless Rest"
+                    "Vessel of Endless Rest",
+                    "Zareth San, the Trickster"
                 ],
                 "recursion_count": 5
             },
